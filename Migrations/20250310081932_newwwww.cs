@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ListLife.Migrations
 {
     /// <inheritdoc />
-    public partial class shareduserlistdb : Migration
+    public partial class newwwww : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -163,11 +163,9 @@ namespace ListLife.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Product = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Amount = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserListId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    Category = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Title = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -180,7 +178,29 @@ namespace ListLife.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SharedList",
+                name: "Products",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ShoppingListId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Products", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Products_ShoppingLists_ShoppingListId",
+                        column: x => x.ShoppingListId,
+                        principalTable: "ShoppingLists",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "SharedLists",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -190,15 +210,15 @@ namespace ListLife.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SharedList", x => x.Id);
+                    table.PrimaryKey("PK_SharedLists", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_SharedList_AspNetUsers_SharedWithUserId",
+                        name: "FK_SharedLists_AspNetUsers_SharedWithUserId",
                         column: x => x.SharedWithUserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_SharedList_ShoppingLists_ShoppingListId",
+                        name: "FK_SharedLists_ShoppingLists_ShoppingListId",
                         column: x => x.ShoppingListId,
                         principalTable: "ShoppingLists",
                         principalColumn: "Id",
@@ -245,13 +265,18 @@ namespace ListLife.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SharedList_SharedWithUserId",
-                table: "SharedList",
+                name: "IX_Products_ShoppingListId",
+                table: "Products",
+                column: "ShoppingListId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SharedLists_SharedWithUserId",
+                table: "SharedLists",
                 column: "SharedWithUserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SharedList_ShoppingListId",
-                table: "SharedList",
+                name: "IX_SharedLists_ShoppingListId",
+                table: "SharedLists",
                 column: "ShoppingListId");
 
             migrationBuilder.CreateIndex(
@@ -279,7 +304,10 @@ namespace ListLife.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "SharedList");
+                name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "SharedLists");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

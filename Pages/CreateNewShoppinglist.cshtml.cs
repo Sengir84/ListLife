@@ -31,6 +31,8 @@ namespace ListLife.Pages
 
         public string UserListName { get; set; }
 
+        [BindProperty]  
+        public Product Product { get; set; }
 
 
         public async Task OnGetAsync()
@@ -42,7 +44,7 @@ namespace ListLife.Pages
             }
         }
 
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync() 
         {
             var user = await userManager.GetUserAsync(User);
 
@@ -51,7 +53,11 @@ namespace ListLife.Pages
                 // Koppla shoppinglistan till användaren och sätt användarens ID
                 ShoppingList.UserId = user.Id;
                 ShoppingList.UserList = user;
-                ShoppingList.Category ??= "Other";  // Om kategorin är null, sätt den till "Övrigt"
+
+                Product.Category ??= "Other";  // Om kategorin �r null, s�tt den till "�vrigt"
+                ShoppingList.Title ??= "New List";  // Om titeln �r null, s�tt den till "Ny lista"
+
+                Product.Category ??= "Other";  // Om kategorin är null, sätt den till "Övrigt"
 
 
                 // Lägg till shoppinglistan i databasen
